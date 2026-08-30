@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Bethel-Lore Ministry</title>
+<meta name="theme-color" content="#161f38">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQmV0aGVsLUxvcmUgTWluaXN0cnkiLCJzaG9ydF9uYW1lIjoiQmV0aGVsLUxvcmUiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzE2MWYzOCIsInRoZW1lX2NvbG9yIjoiIzE2MWYzOCJ9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#161f38;
+    --night-deep:#0e1526;
+    --gold:#e3b34f;
+    --gold-soft:#f2d38b;
+    --ember:#c97b63;
+    --ivory:#f3ede0;
+    --line:rgba(243,237,224,0.14);
+    --danger:#c65b4e;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    background:radial-gradient(120% 90% at 50% -10%, #24304f 0%, var(--night) 45%, var(--night-deep) 100%);
+    color:var(--ivory);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    padding:28px 22px 18px;
+    text-align:center;
+    position:relative;
+  }
+  .flame{
+    width:14px;height:20px;margin:0 auto 10px;
+    position:relative;
+  }
+  .flame::before{
+    content:"";
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 70%, var(--gold-soft), var(--gold) 55%, var(--ember) 100%);
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    transform-origin:50% 100%;
+    animation:flicker 2.6s ease-in-out infinite;
+    filter:drop-shadow(0 0 8px rgba(227,179,79,0.7));
+  }
+  @keyframes flicker{
+    0%,100%{transform:scaleY(1) scaleX(1) rotate(0deg);}
+    25%{transform:scaleY(1.08) scaleX(0.94) rotate(-2deg);}
+    50%{transform:scaleY(0.96) scaleX(1.04) rotate(1deg);}
+    75%{transform:scaleY(1.05) scaleX(0.97) rotate(-1deg);}
+  }
+  header h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:2.1rem;
+    letter-spacing:0.02em;
+    margin:0;
+    color:var(--ivory);
+  }
+  header p{
+    margin:6px 0 0;
+    font-size:0.85rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold-soft);
+    opacity:0.85;
+  }
+
+  /* ---------- Main content ---------- */
+  main{
+    flex:1;
+    padding:6px 18px 100px;
+    max-width:520px;
+    margin:0 auto;
+    width:100%;
+  }
+  .view{display:none; animation:rise 0.35s ease;}
+  .view.active{display:block;}
+  @keyframes rise{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:16px;
+  }
+  .card h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.25rem;
+    margin:0 0 8px;
+    color:var(--gold-soft);
+  }
+  .card p{
+    margin:0 0 4px;
+    line-height:1.55;
+    font-size:0.96rem;
+    color:rgba(243,237,224,0.85);
+  }
+  .verse{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.05rem;
+    line-height:1.6;
+    color:var(--ivory);
+    border-left:2px solid var(--gold);
+    padding-left:14px;
+    margin:14px 0 6px;
+  }
+  .verse span{display:block; margin-top:8px; font-style:normal; font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold-soft); opacity:0.8;}
+
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:4px;
+  }
+  .tile{
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 14px;
+    text-align:left;
+    color:var(--ivory);
+    font-family:'Source Sans 3', sans-serif;
+    font-size:0.95rem;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    transition:transform 0.15s ease, background 0.15s ease;
+  }
+  .tile:active{ transform:scale(0.97); background:rgba(255,255,255,0.08); }
+  .tile .ic{ font-size:1.4rem; }
+  .tile small{ font-weight:400; opacity:0.7; font-size:0.78rem; }
+
+  label{
+    display:block;
+    font-size:0.82rem;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--gold-soft);
+    margin:14px 0 6px;
+  }
+  input, textarea, select{
+    width:100%;
+    background:rgba(255,255,255,0.06);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 13px;
+    color:var(--ivory);
+    font-family:'Source Sans 3', sans-serif;
+    font-size:0.95rem;
+    resize:vertical;
+  }
+  input::placeholder, textarea::placeholder{color:rgba(243,237,224,0.4);}
+  input:focus, textarea:focus, select:focus{
+    outline:2px solid var(--gold);
+    outline-offset:1px;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+    margin-top:18px;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    font-size:1rem;
+    font-weight:600;
+    font-family:'Source Sans 3', sans-serif;
+    cursor:pointer;
+    background:linear-gradient(180deg, var(--gold-soft), var(--gold));
+    color:#231705;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn.secondary{
+    background:rgba(255,255,255,0.06);
+    color:var(--ivory);
+    border:1px solid var(--line);
+  }
+  .btn.danger{
+    background:linear-gradient(180deg, #d9756a, var(--danger));
+    color:#2b0d09;
+  }
+  .btn:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; }
+
+  .row{display:flex; gap:10px;}
+  .row .btn{margin-top:12px;}
+
+  .note{
+    font-size:0.82rem;
+    color:rgba(243,237,224,0.6);
+    margin-top:10px;
+    line-height:1.5;
+  }
+  .status{
+    display:none;
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:10px;
+    background:rgba(227,179,79,0.14);
+    border:1px solid rgba(227,179,79,0.4);
+    color:var(--gold-soft);
+    font-size:0.9rem;
+  }
+  .status.show{display:block; animation:rise 0.3s ease;}
+
+  .list-item{
+    border-top:1px solid var(--line);
+    padding:12px 0;
+    font-size:0.9rem;
+  }
+  .list-item:first-child{border-top:none;}
+  .list-item .meta{font-size:0.75rem; color:var(--gold-soft); opacity:0.8; margin-bottom:4px;}
+
+  .live-dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--danger);
+    display:inline-block;
+    margin-right:7px;
+    box-shadow:0 0 0 0 rgba(198,91,78,0.6);
+    animation:pulse 1.8s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(198,91,78,0.55);}
+    70%{box-shadow:0 0 0 10px rgba(198,91,78,0);}
+    100%{box-shadow:0 0 0 0 rgba(198,91,78,0);}
+  }
+  .screen-frame{
+    aspect-ratio:16/9;
+    border-radius:12px;
+    background:#0a0f1e;
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:rgba(243,237,224,0.5);
+    font-size:0.85rem;
+    text-align:center;
+    padding:16px;
+  }
+
+  /* ---------- Bottom nav ---------- */
+  nav{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    background:rgba(14,21,38,0.92);
+    backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    z-index:10;
+  }
+  nav button{
+    flex:1;
+    background:none;
+    border:none;
+    color:rgba(243,237,224,0.55);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-size:0.68rem;
+    font-family:'Source Sans 3', sans-serif;
+    padding:6px 2px;
+    cursor:pointer;
+    letter-spacing:0.01em;
+  }
+  nav button .ic{font-size:1.25rem;}
+  nav button.active{color:var(--gold-soft);}
+
+  a{color:var(--gold-soft);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="flame"></div>
+  <h1>Bethel-Lore</h1>
+  <p>Ministry &middot; A house of prayer</p>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section class="view active" id="view-home">
+    <div class="card">
+      <div class="verse">
+        "Call to me and I will answer you, and will tell you great and hidden things that you have not known."
+        <span>Jeremiah 33:3</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <button class="tile" onclick="showView('prayer')">
+        <span class="ic">🕯️</span>
+        Prayer Line
+        <small>Send or call in a request</small>
+      </button>
+      <button class="tile" onclick="showView('live')">
+        <span class="ic">📡</span>
+        Life Service
+        <small>Join or view schedule</small>
+      </button>
+      <button class="tile" onclick="showView('help')">
+        <span class="ic">🤝</span>
+        Help
+        <small>Talk to someone now</small>
+      </button>
+      <button class="tile" onclick="showView('contact')">
+        <span class="ic">✉️</span>
+        Contact
+        <small>Reach the ministry</small>
+      </button>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>Welcome</h2>
+      <p>Betelo exists to be a light for anyone who needs prayer, presence, or a place to belong. Whatever brought you here today, you're welcome.</p>
+    </div>
+  </section>
+
+  <!-- PRAYER LINE -->
+  <section class="view" id="view-prayer">
+    <div class="card">
+      <h2>Prayer Line</h2>
+      <p>Share what's on your heart. A member of the prayer team will hold this with you — privately and without judgment.</p>
+    </div>
+
+    <form id="prayerForm" class="card">
+      <label for="pName">Your name</label>
+      <input id="pName" placeholder="First name is fine" required>
+
+      <label for="pContact">Phone or email (optional)</label>
+      <input id="pContact" placeholder="So we can follow up, if you'd like">
+
+      <label for="pUrgency">How urgent is this?</label>
+      <select id="pUrgency">
+        <option>Whenever you can — no rush</option>
+        <option>Soon, please — within a day or two</option>
+        <option>Urgent — I need to talk to someone today</option>
+      </select>
+
+      <label for="pRequest">Your prayer request</label>
+      <textarea id="pRequest" rows="4" placeholder="Share as much or as little as you'd like" required></textarea>
+
+      <label style="display:flex;align-items:center;gap:8px; text-transform:none; letter-spacing:0; font-size:0.9rem;">
+        <input type="checkbox" id="pPrivate" style="width:auto;">
+        Keep this confidential (shared only with the prayer team)
+      </label>
+
+      <button type="submit" class="btn">Send prayer request</button>
+      <div class="status" id="prayerStatus">Your request has been received. Someone from the prayer team will be praying with you.</div>
+    </form>
+
+    <div class="card">
+      <h2>Prefer to talk?</h2>
+      <p>Call the prayer line directly:</p>
+      <a class="btn secondary" href="tel:+10000000000" style="text-decoration:none; display:flex;">📞 Call Prayer Line</a>
+      <p class="note">Replace this number with Betelo's real prayer line number before publishing.</p>
+    </div>
+
+    <div class="card" id="prayerHistoryCard" style="display:none;">
+      <h2>Your recent requests</h2>
+      <div id="prayerHistory"></div>
+    </div>
+  </section>
+
+  <!-- HELP -->
+  <section class="view" id="view-help">
+    <div class="card">
+      <h2>Help</h2>
+      <p>If you are in crisis or need to speak with someone right now, please use one of the options below.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="color:var(--danger);">In immediate danger?</h2>
+      <p>If you or someone else is in immediate physical danger, please contact local emergency services right away.</p>
+      <a class="btn danger" href="tel:911" style="text-decoration:none; display:flex;">Call Emergency Services</a>
+    </div>
+
+    <div class="card">
+      <h2>Talk to Betelo's care team</h2>
+      <p>Our team is available for pastoral support, counsel, or simply someone to listen.</p>
+      <a class="btn" href="tel:+10000000000" style="text-decoration:none; display:flex;">📞 Call Care Line</a>
+      <a class="btn secondary" href="sms:+10000000000" style="text-decoration:none; display:flex; margin-top:10px;">💬 Text Care Line</a>
+    </div>
+
+    <div class="card">
+      <h2>Cancel a request or appointment</h2>
+      <p>Need to cancel a prayer session, meeting, or visit you had scheduled with the ministry?</p>
+      <label for="cancelWhat">What would you like to cancel?</label>
+      <input id="cancelWhat" placeholder="e.g. Tuesday counseling appointment">
+      <button class="btn secondary" onclick="submitCancel()">Submit cancellation</button>
+      <div class="status" id="cancelStatus">Your cancellation has been noted. The team will follow up to confirm.</div>
+    </div>
+
+    <p class="note">This app is not a substitute for professional emergency services. If you are experiencing a mental health crisis, please also consider a crisis line in your country.</p>
+  </section>
+
+  <!-- LIFE SERVICE (live/streamed service) -->
+  <section class="view" id="view-live">
+    <div class="card">
+      <h2><span class="live-dot"></span>Life Service</h2>
+      <p>Join our services live, or check the schedule for the next one.</p>
+    </div>
+
+    <div class="card">
+      <div class="screen-frame" id="liveFrame">
+        Live stream will appear here.<br>Embed your YouTube / Facebook Live link in the code.
+      </div>
+      <a class="btn" href="#" id="liveLink" style="text-decoration:none; display:flex; margin-top:14px;">▶ Watch Live</a>
+      <p class="note">Replace the placeholder link in the code with your actual livestream URL (YouTube, Facebook, or Zoom).</p>
+    </div>
+
+    <div class="card">
+      <h2>Service Schedule</h2>
+      <div class="list-item">
+        <div class="meta">SUNDAY · 9:00 AM</div>
+        Sunday Worship Service
+      </div>
+      <div class="list-item">
+        <div class="meta">WEDNESDAY · 6:30 PM</div>
+        Midweek Prayer & Bible Study
+      </div>
+      <div class="list-item">
+        <div class="meta">FRIDAY · 7:00 PM</div>
+        Night of Prayer
+      </div>
+      <p class="note">Edit these times in the code to match Betelo's real schedule.</p>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="view" id="view-contact">
+    <div class="card">
+      <h2>Contact Betelo</h2>
+      <p>Reach out with questions, feedback, or to connect with the ministry.</p>
+    </div>
+
+    <form id="contactForm" class="card">
+      <label for="cName">Name</label>
+      <input id="cName" placeholder="Your name" required>
+
+      <label for="cEmail">Email or phone</label>
+      <input id="cEmail" placeholder="How should we reach you?" required>
+
+      <label for="cMessage">Message</label>
+      <textarea id="cMessage" rows="4" placeholder="How can we help?" required></textarea>
+
+      <button type="submit" class="btn">Send message</button>
+      <div class="status" id="contactStatus">Message sent. The Betelo team will be in touch soon.</div>
+    </form>
+
+    <div class="card">
+      <h2>Other ways to reach us</h2>
+      <p>📍 Address — add ministry address here</p>
+      <p>📞 <a href="tel:+10000000000">Main office number</a></p>
+      <p>✉️ <a href="mailto:info@betelo.org">info@betelo.org</a></p>
+    </div>
+  </section>
+
+</main>
+
+<nav>
+  <button class="active" data-view="home" onclick="showView('home')"><span class="ic">🏠</span>Home</button>
+  <button data-view="prayer" onclick="showView('prayer')"><span class="ic">🕯️</span>Prayer</button>
+  <button data-view="live" onclick="showView('live')"><span class="ic">📡</span>Service</button>
+  <button data-view="help" onclick="showView('help')"><span class="ic">🤝</span>Help</button>
+  <button data-view="contact" onclick="showView('contact')"><span class="ic">✉️</span>Contact</button>
+</nav>
+
+<script>
+  function showView(name){
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+    window.scrollTo({top:0, behavior:'smooth'});
+    if(name === 'prayer') renderPrayerHistory();
+  }
+
+  function loadRequests(){
+    try{ return JSON.parse(localStorage.getItem('betelo_prayers') || '[]'); }
+    catch(e){ return []; }
+  }
+  function saveRequests(list){
+    localStorage.setItem('betelo_prayers', JSON.stringify(list));
+  }
+
+  function renderPrayerHistory(){
+    const list = loadRequests();
+    const card = document.getElementById('prayerHistoryCard');
+    const holder = document.getElementById('prayerHistory');
+    if(list.length === 0){ card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    holder.innerHTML = list.slice().reverse().map(r => `
+      <div class="list-item">
+        <div class="meta">${new Date(r.date).toLocaleDateString()} · ${r.urgency}</div>
+        ${r.request}
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('prayerForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const entry = {
+      name: document.getElementById('pName').value,
+      contact: document.getElementById('pContact').value,
+      urgency: document.getElementById('pUrgency').value,
+      request: document.getElementById('pRequest').value,
+      private: document.getElementById('pPrivate').checked,
+      date: new Date().toISOString()
+    };
+    const list = loadRequests();
+    list.push(entry);
+    saveRequests(list);
+
+    const status = document.getElementById('prayerStatus');
+    status.classList.add('show');
+    this.reset();
+    renderPrayerHistory();
+    setTimeout(() => status.classList.remove('show'), 5000);
+  });
+
+  document.getElementById('contactForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const status = document.getElementById('contactStatus');
+    status.classList.add('show');
+    this.reset();
+    setTimeout(() => status.classList.remove('show'), 5000);
+  });
+
+  function submitCancel(){
+    const val = document.getElementById('cancelWhat').value;
+    if(!val.trim()) return;
+    const status = document.getElementById('cancelStatus');
+    status.classList.add('show');
+    document.getElementById('cancelWhat').value = '';
+    setTimeout(() => status.classList.remove('show'), 5000);
+  }
+
+  // Set the live watch link (replace with real stream URL)
+  document.getElementById('liveLink').href = 'https://www.youtube.com/@yourministry/live';
+</script>
+
+</body>
+</html>
