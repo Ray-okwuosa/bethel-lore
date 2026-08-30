@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Bethel-Lore Ministry</title>
-<meta name="theme-color" content="#161f38">
-<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQmV0aGVsLUxvcmUgTWluaXN0cnkiLCJzaG9ydF9uYW1lIjoiQmV0aGVsLUxvcmUiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzE2MWYzOCIsInRoZW1lX2NvbG9yIjoiIzE2MWYzOCJ9">
+<meta name="theme-color" content="#0f1c3d">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIkJldGhlbC1Mb3JlIE1pbmlzdHJ5IiwgInNob3J0X25hbWUiOiAiQmV0aGVsLUxvcmUiLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiIzBmMWMzZCIsICJ0aGVtZV9jb2xvciI6ICIjMGYxYzNkIn0=">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --night:#161f38;
-    --night-deep:#0e1526;
-    --gold:#e3b34f;
-    --gold-soft:#f2d38b;
-    --ember:#c97b63;
+    --night:#0f1c3d;
+    --night-deep:#081128;
+    --gold:#d4af37;
+    --gold-soft:#f6e2a8;
+    --bronze:#9c7a2e;
     --ivory:#f3ede0;
     --line:rgba(243,237,224,0.14);
     --danger:#c65b4e;
@@ -40,24 +40,21 @@
     text-align:center;
     position:relative;
   }
-  .flame{
-    width:14px;height:20px;margin:0 auto 10px;
-    position:relative;
+  .badge{
+    width:64px;height:64px;margin:0 auto 14px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(160deg, var(--gold-soft), var(--gold) 60%, var(--bronze) 100%);
+    box-shadow:0 0 0 1px rgba(243,237,224,0.25), 0 6px 20px rgba(0,0,0,0.35);
   }
-  .flame::before{
-    content:"";
-    position:absolute; inset:0;
-    background:radial-gradient(circle at 50% 70%, var(--gold-soft), var(--gold) 55%, var(--ember) 100%);
-    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
-    transform-origin:50% 100%;
-    animation:flicker 2.6s ease-in-out infinite;
-    filter:drop-shadow(0 0 8px rgba(227,179,79,0.7));
-  }
-  @keyframes flicker{
-    0%,100%{transform:scaleY(1) scaleX(1) rotate(0deg);}
-    25%{transform:scaleY(1.08) scaleX(0.94) rotate(-2deg);}
-    50%{transform:scaleY(0.96) scaleX(1.04) rotate(1deg);}
-    75%{transform:scaleY(1.05) scaleX(0.97) rotate(-1deg);}
+  .badge span{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:1.05rem;
+    letter-spacing:0.06em;
+    color:#0f1c3d;
   }
   header h1{
     font-family:'Fraunces', serif;
@@ -185,7 +182,7 @@
     font-family:'Source Sans 3', sans-serif;
     cursor:pointer;
     background:linear-gradient(180deg, var(--gold-soft), var(--gold));
-    color:#231705;
+    color:#0f1c3d;
     transition:transform 0.15s ease, box-shadow 0.15s ease;
   }
   .btn:active{transform:scale(0.98);}
@@ -214,8 +211,8 @@
     margin-top:14px;
     padding:12px 14px;
     border-radius:10px;
-    background:rgba(227,179,79,0.14);
-    border:1px solid rgba(227,179,79,0.4);
+    background:rgba(199,212,232,0.14);
+    border:1px solid rgba(199,212,232,0.4);
     color:var(--gold-soft);
     font-size:0.9rem;
   }
@@ -291,7 +288,7 @@
 <body>
 
 <header>
-  <div class="flame"></div>
+  <div class="badge"><span>B·L·A·M</span></div>
   <h1>Bethel-Lore</h1>
   <p>Ministry &middot; A house of prayer</p>
 </header>
