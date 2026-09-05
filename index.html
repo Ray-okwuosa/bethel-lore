@@ -317,6 +317,16 @@
         Life Service
         <small>Join or view schedule</small>
       </button>
+      <button class="tile" onclick="showView('challenge')">
+        <span class="ic">📖</span>
+        Bible Challenge
+        <small>Test your knowledge</small>
+      </button>
+      <button class="tile" onclick="showView('guidance')">
+        <span class="ic">✨</span>
+        Verse Guidance
+        <small>Get a verse for what you're facing</small>
+      </button>
       <button class="tile" onclick="showView('help')">
         <span class="ic">🤝</span>
         Help
@@ -474,12 +484,67 @@
     </div>
   </section>
 
+  <!-- BIBLE CHALLENGE -->
+  <section class="view" id="view-challenge">
+    <div class="card">
+      <h2>Bible Challenge</h2>
+      <p>Test what you know — a new question each round. See how far you can go.</p>
+    </div>
+
+    <div class="card">
+      <div class="note" id="challengeProgress" style="margin-top:0; display:flex; justify-content:space-between;">
+        <span id="qCounter">Question 1 of 8</span>
+        <span id="qScore">Score: 0</span>
+      </div>
+      <h2 id="qText" style="margin-top:14px; font-size:1.1rem;">Loading question…</h2>
+      <div id="qOptions" style="display:flex; flex-direction:column; gap:10px; margin-top:14px;"></div>
+      <div class="status" id="qFeedback"></div>
+      <button class="btn secondary" id="qNextBtn" style="display:none;" onclick="nextQuestion()">Next Question →</button>
+    </div>
+
+    <div class="card" id="qResultCard" style="display:none; text-align:center;">
+      <h2>Challenge Complete!</h2>
+      <p id="qFinalScore" style="font-size:1.05rem;"></p>
+      <button class="btn" onclick="startChallenge()">Play Again</button>
+    </div>
+  </section>
+
+  <!-- VERSE GUIDANCE -->
+  <section class="view" id="view-guidance">
+    <div class="card">
+      <h2>✨ Verse Guidance</h2>
+      <p>Tell us what's on your mind — fear, grief, doubt, gratitude, a decision you're facing — and we'll bring you a Bible verse for it.</p>
+    </div>
+
+    <div class="card">
+      <label for="guidanceInput">What are you facing today?</label>
+      <input id="guidanceInput" placeholder="e.g. anxious, lonely, grateful, need direction">
+      <button class="btn" onclick="getGuidance()">Get a Verse</button>
+
+      <div class="status" id="guidanceResult" style="margin-top:16px;"></div>
+    </div>
+
+    <div class="card">
+      <h2>Try a topic</h2>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <button class="btn secondary" style="width:auto; margin-top:0; padding:8px 14px; font-size:0.85rem;" onclick="quickGuidance('fear')">Fear</button>
+        <button class="btn secondary" style="width:auto; margin-top:0; padding:8px 14px; font-size:0.85rem;" onclick="quickGuidance('grief')">Grief</button>
+        <button class="btn secondary" style="width:auto; margin-top:0; padding:8px 14px; font-size:0.85rem;" onclick="quickGuidance('anxiety')">Anxiety</button>
+        <button class="btn secondary" style="width:auto; margin-top:0; padding:8px 14px; font-size:0.85rem;" onclick="quickGuidance('strength')">Strength</button>
+        <button class="btn secondary" style="width:auto; margin-top:0; padding:8px 14px; font-size:0.85rem;" onclick="quickGuidance('guidance')">Direction</button>
+        <button class="btn secondary" style="width:auto; margin-top:0; padding:8px 14px; font-size:0.85rem;" onclick="quickGuidance('gratitude')">Gratitude</button>
+        <button class="btn secondary" style="width:auto; margin-top:0; padding:8px 14px; font-size:0.85rem;" onclick="quickGuidance('forgiveness')">Forgiveness</button>
+        <button class="btn secondary" style="width:auto; margin-top:0; padding:8px 14px; font-size:0.85rem;" onclick="quickGuidance('hope')">Hope</button>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <nav>
   <button class="active" data-view="home" onclick="showView('home')"><span class="ic">🏠</span>Home</button>
   <button data-view="prayer" onclick="showView('prayer')"><span class="ic">🕯️</span>Prayer</button>
-  <button data-view="live" onclick="showView('live')"><span class="ic">📡</span>Service</button>
+  <button data-view="guidance" onclick="showView('guidance')"><span class="ic">✨</span>Guidance</button>
   <button data-view="help" onclick="showView('help')"><span class="ic">🤝</span>Help</button>
   <button data-view="contact" onclick="showView('contact')"><span class="ic">✉️</span>Contact</button>
 </nav>
@@ -491,6 +556,7 @@
     document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.view === name));
     window.scrollTo({top:0, behavior:'smooth'});
     if(name === 'prayer') renderPrayerHistory();
+    if(name === 'challenge' && !challengeStarted) startChallenge();
   }
 
   function loadRequests(){
@@ -555,6 +621,166 @@
 
   // Set the live watch link (replace with real stream URL)
   document.getElementById('liveLink').href = 'https://www.youtube.com/@yourministry/live';
+
+  // ---------- BIBLE CHALLENGE ----------
+  const quizBank = [
+    {q:"Who built the ark before the flood?", options:["Noah","Abraham","Moses","Joshua"], answer:0},
+    {q:"How many days and nights did it rain during the flood?", options:["7","40","70","100"], answer:1},
+    {q:"Who led the Israelites out of Egypt?", options:["Joshua","Aaron","Moses","David"], answer:2},
+    {q:"What did God create on the first day?", options:["Animals","Light","Man","The sea"], answer:1},
+    {q:"Who was thrown into the lions' den?", options:["Daniel","Elijah","Jonah","Samuel"], answer:0},
+    {q:"Who was swallowed by a great fish?", options:["Jonah","Peter","Paul","Job"], answer:0},
+    {q:"How many disciples did Jesus have?", options:["10","12","7","14"], answer:1},
+    {q:"Where was Jesus born?", options:["Nazareth","Jerusalem","Bethlehem","Galilee"], answer:2},
+    {q:"Who denied Jesus three times?", options:["Judas","Peter","Thomas","John"], answer:1},
+    {q:"Who was the strongest man, known for his hair?", options:["Samson","Goliath","David","Saul"], answer:0},
+    {q:"What did David use to defeat Goliath?", options:["A sword","A sling and stone","A spear","His bare hands"], answer:1},
+    {q:"Who was the first man created by God?", options:["Cain","Abel","Adam","Seth"], answer:2}
+  ];
+
+  let challengeQuestions = [];
+  let currentQ = 0;
+  let score = 0;
+  let challengeStarted = false;
+  const TOTAL_QUESTIONS = 8;
+
+  function shuffleArray(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function startChallenge(){
+    challengeStarted = true;
+    challengeQuestions = shuffleArray(quizBank).slice(0, TOTAL_QUESTIONS);
+    currentQ = 0;
+    score = 0;
+    document.getElementById('qResultCard').style.display = 'none';
+    renderQuestion();
+  }
+
+  function renderQuestion(){
+    const q = challengeQuestions[currentQ];
+    document.getElementById('qCounter').textContent = `Question ${currentQ + 1} of ${challengeQuestions.length}`;
+    document.getElementById('qScore').textContent = `Score: ${score}`;
+    document.getElementById('qText').textContent = q.q;
+    document.getElementById('qFeedback').classList.remove('show');
+    document.getElementById('qNextBtn').style.display = 'none';
+
+    const optsDiv = document.getElementById('qOptions');
+    optsDiv.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn secondary';
+      btn.style.marginTop = '0';
+      btn.textContent = opt;
+      btn.onclick = () => answerQuestion(i, btn);
+      optsDiv.appendChild(btn);
+    });
+  }
+
+  function answerQuestion(selected, btnEl){
+    const q = challengeQuestions[currentQ];
+    const optsDiv = document.getElementById('qOptions');
+    Array.from(optsDiv.children).forEach(b => b.onclick = null);
+
+    const feedback = document.getElementById('qFeedback');
+    if(selected === q.answer){
+      score++;
+      btnEl.style.background = 'rgba(212,175,55,0.25)';
+      btnEl.style.borderColor = 'var(--gold)';
+      feedback.textContent = "Correct! 🎉";
+    } else {
+      btnEl.style.background = 'rgba(198,91,78,0.2)';
+      btnEl.style.borderColor = 'var(--danger)';
+      feedback.textContent = `Not quite — the answer was "${q.options[q.answer]}".`;
+      optsDiv.children[q.answer].style.background = 'rgba(212,175,55,0.2)';
+    }
+    feedback.classList.add('show');
+    document.getElementById('qScore').textContent = `Score: ${score}`;
+    document.getElementById('qNextBtn').style.display = 'flex';
+  }
+
+  function nextQuestion(){
+    currentQ++;
+    if(currentQ < challengeQuestions.length){
+      renderQuestion();
+    } else {
+      document.getElementById('qFinalScore').textContent = `You scored ${score} out of ${challengeQuestions.length}.`;
+      document.getElementById('qResultCard').style.display = 'block';
+      document.getElementById('qText').textContent = '';
+      document.getElementById('qOptions').innerHTML = '';
+      document.getElementById('qFeedback').classList.remove('show');
+      document.getElementById('qNextBtn').style.display = 'none';
+      document.getElementById('qCounter').textContent = 'Challenge complete';
+    }
+  }
+
+  // ---------- VERSE GUIDANCE ----------
+  const verseBank = {
+    fear: {ref:"Isaiah 41:10", text:"\"Fear not, for I am with you; be not dismayed, for I am your God; I will strengthen you, I will help you.\"", note:"Whatever you're facing, you are not facing it alone."},
+    anxiety: {ref:"Philippians 4:6-7", text:"\"Do not be anxious about anything, but in everything by prayer and supplication with thanksgiving let your requests be made known to God.\"", note:"Bring the weight of it to God — peace is offered, not earned."},
+    grief: {ref:"Psalm 34:18", text:"\"The Lord is near to the brokenhearted and saves the crushed in spirit.\"", note:"Grief is not a sign of distance from God — He is closest in it."},
+    loneliness: {ref:"Deuteronomy 31:6", text:"\"Be strong and courageous... for it is the Lord your God who goes with you. He will not leave you or forsake you.\"", note:"You are seen and held, even when it doesn't feel that way."},
+    strength: {ref:"Isaiah 40:31", text:"\"They who wait for the Lord shall renew their strength; they shall mount up with wings like eagles.\"", note:"Strength often comes through waiting, not rushing."},
+    guidance: {ref:"Proverbs 3:5-6", text:"\"Trust in the Lord with all your heart, and do not lean on your own understanding... he will make straight your paths.\"", note:"You don't need to see the whole road — just the next step."},
+    gratitude: {ref:"1 Thessalonians 5:18", text:"\"Give thanks in all circumstances; for this is the will of God in Christ Jesus for you.\"", note:"Gratitude, even in hard seasons, opens the heart."},
+    forgiveness: {ref:"Colossians 3:13", text:"\"Bear with each other and forgive one another... forgive as the Lord forgave you.\"", note:"Forgiveness is a gift you give yourself as much as others."},
+    hope: {ref:"Jeremiah 29:11", text:"\"For I know the plans I have for you, declares the Lord, plans for welfare and not for evil, to give you a future and a hope.\"", note:"Your story isn't finished."},
+    anger: {ref:"Ephesians 4:26", text:"\"Be angry and do not sin; do not let the sun go down on your anger.\"", note:"Feeling anger isn't wrong — what you do with it matters."},
+    doubt: {ref:"Mark 9:24", text:"\"I believe; help my unbelief!\"", note:"Even this honest prayer is enough of a starting point."},
+    patience: {ref:"Romans 12:12", text:"\"Rejoice in hope, be patient in tribulation, be constant in prayer.\"", note:"Patience is built in the waiting, not before it."}
+  };
+
+  const keywordMap = {
+    fear:"fear", afraid:"fear", scared:"fear", terrified:"fear",
+    anxious:"anxiety", anxiety:"anxiety", worried:"anxiety", worry:"anxiety", stressed:"anxiety", overwhelmed:"anxiety",
+    grief:"grief", grieving:"grief", loss:"grief", died:"grief", death:"grief", mourning:"grief", sad:"grief",
+    lonely:"loneliness", loneliness:"loneliness", alone:"loneliness", isolated:"loneliness",
+    weak:"strength", tired:"strength", exhausted:"strength", strength:"strength", strong:"strength",
+    lost:"guidance", direction:"guidance", confused:"guidance", decision:"guidance", guidance:"guidance", choice:"guidance",
+    thankful:"gratitude", grateful:"gratitude", gratitude:"gratitude", blessed:"gratitude",
+    forgive:"forgiveness", forgiveness:"forgiveness", betrayed:"forgiveness", hurt:"forgiveness",
+    hope:"hope", hopeless:"hope", future:"hope", uncertain:"hope",
+    angry:"anger", anger:"anger", frustrated:"anger", mad:"anger",
+    doubt:"doubt", doubting:"doubt", unsure:"doubt", faith:"doubt",
+    patience:"patience", patient:"patience", waiting:"patience"
+  };
+
+  function matchVerse(input){
+    const lower = input.toLowerCase();
+    for(const key in keywordMap){
+      if(lower.includes(key)){
+        return verseBank[keywordMap[key]];
+      }
+    }
+    // fallback: pick a gentle general verse
+    return verseBank.hope;
+  }
+
+  function displayVerse(topicKey){
+    const v = verseBank[topicKey] || matchVerse(topicKey);
+    const result = document.getElementById('guidanceResult');
+    result.innerHTML = `<div class="verse" style="margin:0;">${v.text}<span>${v.ref}</span></div><p style="margin-top:12px;">${v.note}</p>`;
+    result.classList.add('show');
+  }
+
+  function getGuidance(){
+    const input = document.getElementById('guidanceInput').value.trim();
+    if(!input) return;
+    const v = matchVerse(input);
+    const result = document.getElementById('guidanceResult');
+    result.innerHTML = `<div class="verse" style="margin:0;">${v.text}<span>${v.ref}</span></div><p style="margin-top:12px;">${v.note}</p>`;
+    result.classList.add('show');
+  }
+
+  function quickGuidance(topicKey){
+    document.getElementById('guidanceInput').value = topicKey;
+    displayVerse(topicKey);
+  }
 </script>
 
 </body>
